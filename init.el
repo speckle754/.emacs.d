@@ -387,7 +387,8 @@
 ;; Windows user with straight.el
 ;; 1. Using MinGW64
 ;; 2. Update MinGW64: pacman -Syu
-;; 3. After "make all" build inside MinGW64 or Emacs,
+;; 3. Then: pacman -S make mingw-w64-x86_64-gcc git pkg-config mingw-w64-x86_64-libmupdf
+;; 4. After "make all" build inside MinGW64 or Emacs,
 ;;    copy your built "reader-core.dll"
 ;;    from .../straight/repos/emacs-reader
 ;;    to   .../straight/builds/reader
