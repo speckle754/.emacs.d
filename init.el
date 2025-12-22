@@ -223,6 +223,9 @@
   :after org
 ;;:custom
 ;;(org-roam-directory "c:/Users/your-name/org/roam")
+;;;; this line help org-roam to act with "[[" to pop up compeletion list to select an existed node,
+;;;; or "[[roam:" to launch org-roam-capture to get a new node that will be inserted the point.
+;;(org-roam-complete-everywhere t)
   :config
   (org-roam-db-autosync-mode))
 (use-package org-roam-ui
