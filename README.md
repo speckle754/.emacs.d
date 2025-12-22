@@ -35,9 +35,13 @@
 需要学习以下 Emacs 命令：  
 ``` text
 C-x C-f => find-file => 寻找文件并打开。  
-M-x eval-buffer => 重新评估（eval）当前缓冲区（buffer）。通常对 init.el 执行该操作。Emacs 将检查包的安装，可以理解在没有正确安装的情况下再次尝试，该命令也适用于修改 init.el 后重新读取配置。  
-```  仓库的 early-init.el 与 init.el 放入  
-你的家目录 下的 .emacs.d 文件夹即可，  
+M-x eval-buffer => 重新评估（eval）当前缓冲区（buffer）。  
+                   通常对 init.el 执行该操作。  
+                   Emacs 将检查包的安装，可以理解在没有正确安装的情况下再次尝试，  
+                   该命令也适用于修改 init.el 后重新让 Emacs 读取配置，但有局限性有时候需要重启。   
+```  
+将本仓库的 early-init.el 与 init.el 放入  
+你的家目录 下的 .emacs.d 文件夹即可。    
 然后打开 Emacs，会自动安装，可能需要多次重启。  
 如果不知道通常也就是默认的 .emacs.d 位置，  
 可以先可以先打开 Emacs，之后通过 everything 这样的搜索工具查看文件夹位置，自之后删除自动生成的文件重新放入即可。  使用 straight.el 进行包管理，    
