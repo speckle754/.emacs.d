@@ -130,6 +130,14 @@
 	  register-alist
 	  file-name-history
 	  shell-command-history)))
+(use-package saveplace
+  :ensure nil
+  :command t
+  :init
+  (setq save-place-file "~/.emacs.d/saveplace")
+  :config
+  (setq save-place-forget-unreadable-files t)
+  (save-place-mode +1))
 (use-package corfu
   :straight t
   :init
