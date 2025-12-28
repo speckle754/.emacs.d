@@ -45,9 +45,12 @@
   (setq inhibit-startup-echo-area-message "YOUR-USER-NAME") ;;C-h v user-login-name
   (setq frame-title-format "%b")
   (setq cursor-type 'bar)
-  ;; bar
+  ;; mode
   (tool-bar-mode 0)
   (scroll-bar-mode 0)
+  (cua-mode 1)
+  (hl-line-mode 1)
+  (visual-line-mode 1)
   ;; better
   (setq ring-bell-function 'ignore)
   (fset 'yes-or-no-p 'y-or-n-p)
@@ -84,7 +87,6 @@
   (setq default-frame-alist
 	'((width . 55)
 	  (height . 25))))
-(cua-mode 1)
 (setenv "PATH" (concat "C:\\msys64\\mingw64\\bin;" (getenv "PATH")))
 ;; which key
 (use-package which-key
@@ -354,43 +356,6 @@
 ;;   (setq dashboard-item-shortcuts '((recents . "r")))    ;;
 ;;   (dashboard-setup-startup-hook))			           ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (use-package enlight					                    	 ;;
-;;   :straight t					                         	 ;;
-;;   :config					                        		 ;;
-;;   (setopt initial-buffer-choice #'enlight)	        		 ;;
-;;   :custom							                         ;;
-;;   (enlight-content						                     ;;
-;;    (concat							                         ;;
-;;     (propertize "Welcome." 'face 'bold-italic)	         	 ;;
-;;     "\n"							                             ;;
-;;     "\n"						                              	 ;;
-;;     (enlight-menu				                    		 ;;
-;;      '(("󰭦Org Agenda"				                    	 ;;
-;;         ("view org agenda" my/org-agenda-today "v")		     ;;
-;; 	("consult org agenda" consult-org-agenda "a"))		         ;;
-;;        ("󰲶Org Roam  "					                     ;;
-;;         ("org capture" org-capture "x")		            	 ;;
-;;         ("roam capture" org-roam-capture "c")	        	 ;;
-;;         ("roam node find" org-roam-node-find "n")	    	 ;;
-;; 	("roam ui" org-roam-ui-open "u")		                	 ;;
-;;         ("roam ql search" org-roam-ql-search "Q"))		     ;;
-;;        ("󰑮Sessions  "					                     ;;
-;;         ("last" +workspace/restore-last-session "l")	     	 ;;
-;; 	("search" doom/load-session "s"))			                 ;;
-;;        ("󰃃Bookmarks "					                     ;;
-;;         ("consult bookmark" consult-bookmark "b")	    	 ;;
-;;         ("recent files" consult-recent-file "r"))		     ;;
-;;        ("󰦭Miscs     "				                    	 ;;
-;;         ("go back" previous-buffer "q")		             	 ;;
-;;         ("google" consult-omni-external-search "g")		     ;;
-;;         ("find file" find-file "F")				             ;;
-;;         ("full screen" toggle-frame-maximized "f")	    	 ;;
-;;         ("focus" toggle-frame-fullscreen "z")		         ;;
-;;         ("scratch" scratch-buffer "S")))			             ;;
-;;        ))))							                         ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package writeroom-mode
   :straight t)
