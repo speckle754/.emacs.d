@@ -150,14 +150,22 @@
   (global-corfu-mode)
   :custom
   (corfu-auto t)
+  (corfu-cycle t)
   (corfu-auto-delay 0.2)
   (corfu-auto-prefix 2)
   (corfu-min-width 40)
   (corfu-max-width 100)
   (corfu-count 10)
-  (corfu-cycle t)
+  (corfu-preselect 'prompt)
+  (corfu-preview-current 'insert) 
+  :bind (:map corfu-map
+              ("TAB" . corfu-next)
+              ([tab] . corfu-next)
+              ("S-TAB" . corfu-previous)
+              ([backtab] . corfu-previous)
+              ("RET" . nil)
+              ([return] . nil))
   :config
-  (define-key corfu-map (kbd "<f2>") 'corfu-quit)
   (unless (display-graphic-p)
     (corfu-terminal-mode +1)))
 (use-package embark-consult
