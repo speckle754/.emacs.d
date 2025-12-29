@@ -114,6 +114,10 @@
   :config  (marginalia-mode t))
 (use-package vertico
   :straight t
+  :bind (:map vertico-map
+	     ("RET" . vertico-directory-enter)
+	     ("DEL" . vertico-directory-delete-word)
+	     ("M-DEL" . vertico-directory-delete-char))
   :init
   (vertico-mode)
   :config
