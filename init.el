@@ -263,12 +263,7 @@
 (use-package org-super-agenda
   :straight t
   :after org
-  :defer t
-  :config
-  (setq org-super-agenda-header-map nil)
-  (add-hook 'org-agenda-mode-hook
-	    #'(lambda () (setq-local nobreak-char-display nil)))
-  (org-super-agenda-mode))
+  :hook (org-agenda-mode . org-super-agenda-mode))
 
 ;;;;;; evil-mode
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
