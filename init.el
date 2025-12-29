@@ -337,8 +337,9 @@
   :straight t)
 (use-package magit
   :straight t
-  :config
-  (setq magit-version-check-extra-packages-mismatch nil))
+  :init
+  (defun my/magit-version-override (&rest _) "4.4.2")
+  (advice-add 'magit-version :override #'my/magit-version-override))
 (use-package neotree
   :straight t
   :defer t
