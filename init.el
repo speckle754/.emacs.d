@@ -181,16 +181,19 @@
   :bind (("C-x r" . consult-recent-file)))
 (use-package super-save
   :straight t
-  :config
-  (setq super-save-auto-save-when-idle t
-        super-save-idle-duration 5 ;; after 5 seconds of not typing autosave
-        super-save-triggers ;; Functions after which buffers are saved (switching window, for example)
-        '(evil-window-next evil-window-prev balance-windows other-window next-buffer previous-buffer)
-        super-save-max-buffer-size 10000000)
+  :custom
+  (super-save-auto-save-when-idle t)
+  (super-save-idle-duration 5)
+  (super-save-triggers '(evil-window-next
+			 evil-window-prev
+			 balance-windows
+			 other-window
+			 next-buffer
+			 previous-buffer))
+  (super-save-max-buffer-size 10000000)
+  (super-save-silent t)
+  :init
   (super-save-mode +1))
-(defun jib-clear-echo-area-timer ()
-  (run-at-time "2 sec" nil (lambda () (message " "))))
-(advice-add 'super-save-command :after 'jib-clear-echo-area-timer)
 (use-package vundo
   :straight t
   :bind (("C-x u" . vundo))
