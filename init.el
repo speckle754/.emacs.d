@@ -322,7 +322,7 @@
 ;;;;modeline
 (use-package hide-mode-line
   :straight t
-  :commands (hide-modeline-mode))
+  :commands (hide-mode-line-mode))
 (use-package doom-modeline
   :straight t
   :init (doom-modeline-mode 1)
