@@ -372,13 +372,19 @@
   :straight t)
 
 ;; Windows user with straight.el
-;; 1. Using MinGW64
-;; 2. Update MinGW64: pacman -Syu
-;; 3. Then: pacman -S make mingw-w64-x86_64-gcc git pkg-config mingw-w64-x86_64-libmupdf
-;; 4. After "make all" build inside MinGW64 or Emacs,
-;;    copy your built "reader-core.dll"
+;; 1. Install MSYS2
+;; 2. Open MSYS2 shell, usually MinGW64 or UCRT64,
+;;    update packages first, run: pacman -Syu
+;;    then run: pacman -S make mingw-w64-x86_64-gcc git pkg-config mingw-w64-x86_64-libmupdf
+;;    or try them: mingw-w64-ucrt64-x86_64-[?] pkgconf
+;; 3. Run: "cd ~/.emacs.d/straight/emacs-reader/repos/ && make all" to build.
+;;    Tips: If you didn't install the right distribution of libmupdf,
+;;          In the shell, "make all" command will tell you which version should be installed.
+;; 4. Copy your built "reader-core.dll" by hand,
 ;;    from .../straight/repos/emacs-reader
 ;;    to   .../straight/builds/reader
+;;    Or run in bash shell: "cp ~/emacs.d/straight/repos/emacs-reader/reader-core.dll \
+;;                              ~/emacs.d/straight/builds/reader"
 (use-package reader
   :straight '(reader :type git :host codeberg :repo "divyaranjan/emacs-reader"
   		     :files ("*.el" "render-core.so")
