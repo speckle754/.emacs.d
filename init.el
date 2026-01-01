@@ -1,20 +1,25 @@
 ;; -*- lexical-binding: t; -*-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;; for org afterwards							                            ;;
-;; (assq-delete-all 'org package--builtins)				                        ;;
-;; (assq-delete-all 'org package--builtin-versions)			                    ;;
-;; ;; use-package							                                	;;
-;; (require 'package)							                                ;;
-;; (setq package-check-signature nil)					                        ;;
-;; (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t) ;;
-;; (package-initialize)							                                ;;
-;; (require 'use-package-ensure)					                            ;;
-;; (setq use-package-always-ensure t)					                        ;;
-;; (unless (package-installed-p 'use-package)				                    ;;
-;; (package-refresh-contents)						                            ;;
-;; (package-install 'use-package))					                            ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; straight.el
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; It's a config for MSYS2 Emacs.
+;; People usually use MinGW64 or UCRT64.
+;; Menu:
+;; - straight.el, use-package
+;; - config of emacs itself
+;; - theme, modeline
+;; - builtin tools
+;; - completion suite
+;; - embark, consult
+;; - some editor improvasations              
+;; - org-mode family                          
+;; - extended tools for programming management
+;; - some useful tools
+;; - emms
+;; - major modes for other langs
+;; - keybinding
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; straight.el, use-package
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name
@@ -32,98 +37,120 @@
   (load bootstrap-file nil 'nomessage))
 (straight-use-package 'use-package)
 (setq straight-use-package-by-default t)
-;; emacs
+;; (setq straight-vc-git-default-clone-depth 'full)
+;;; straight.el, use-package ends here.
+;;; Emacs config, use-package style
 (use-package emacs
   :config
-  ;; code system
+  ;; coding system, locale
   (prefer-coding-system 'utf-8)
   (setq system-time-locale "C")
-  ;; startup screen
+  ;; custom.el
+  (setq custom-file (locate-user-emacs-file "custom.el"))
+  (load custom-file :no-error)
+  ;; no builtin auto-save
+  (setq make-backup-files nil)
+  (setq auto-save-default nil)
+  ;; no ring bell
+  (setq ring-bell-function 'ignore)
+  ;; inhibit default screen
   (setq inhibit-startup-screen t)
   (setq initial-scratch-message nil)
   (setq inhibit-splash-screen t)
-  (setq inhibit-startup-echo-area-message "YOUR-USER-NAME") ;;C-h v user-login-name
+  (setq inhibit-startup-echo-area-message "__") ;; Here, write the value of: C-h v user-login-name
+  ;; some better faces
+  (fset 'yes-or-no-p 'y-or-n-p)
   (setq frame-title-format "%b")
-  (setq cursor-type 'bar)
-  ;; mode
+  (setq cursor-type 'box)
+  ;; some simple builtin modes
+  (global-auto-revert-mode 1)
   (tool-bar-mode 0)
   (scroll-bar-mode 0)
-  (cua-mode 1)
-  (hl-line-mode 1)
+  (horizontal-scroll-bar-mode 0)
   (visual-line-mode 1)
-  ;; better
-  (setq ring-bell-function 'ignore)
-  (fset 'yes-or-no-p 'y-or-n-p)
-  (global-auto-revert-mode 1)
-  ;; stop auto-save
-  (setq make-backup-files nil)
-  (setq auto-save-default nil)
-  ;; set face, set font set
+  (column-number-mode 1)
+  (hl-line-mode 1)
+  (display-line-numbers-mode 0)
+  (cua-mode 1)
+  ;; font
   (set-face-attribute 'default nil
 		      :family "BlexMono Nerd Font Mono"
-		      :height 125
+		      :height 135
 		      :weight 'regular)
   (set-face-attribute 'variable-pitch nil
 		      :family "BlexMono Nerd Font Mono"
-		      :height 125
+		      :height 135
 		      :weight 'regular)
   (set-fontset-font t 'han
-		    (font-spec :family "Noto Sans Mono CJK SC"
-			       :weight 'regular))
+		    (font-spec
+		     :family "Noto Sans Mono CJK SC"
+		     :weight 'regular))
   (set-fontset-font t 'cjk-misc
-		    (font-spec :family "Noto Sans Mono CJK SC"
-			       :weight 'regular))
+		    (font-spec
+		     :family "Noto Sans Mono CJK SC"
+		     :weight 'regular))
   (set-fontset-font t '(#x1f300 . #x1fad0)
-		    (font-spec :family "Segoe UI Emoji"
-			       :weight 'regular)
+		    (font-spec
+		     :family "Segoe UI Emoji"
+		     :weight 'regular)
 		    nil 'prepend)
   (set-fontset-font t 'unicode
-		    (font-spec :family "Noto Sans Mono CJK SC"
-			       :weight 'regular)
+		    (font-spec
+		     :family "Noto Sans Mono CJK SC"
+		     :weight 'regular)
 		    nil 'prepend)
+  ;; frame size
   (setq initial-frame-alist
 	'((width . 55)
 	  (height . 25)))
   (setq default-frame-alist
 	'((width . 55)
 	  (height . 25))))
-(setenv "PATH" (concat "C:\\msys64\\mingw64\\bin;" (getenv "PATH")))
-;; which key
-(use-package which-key
+;; (setenv "PATH" (concat "c:/msys64/mingw64/bin;" (getenv "PATH")))
+;;;;;; Emacs config ends here, now actual packages.
+;; theme, ui, modeline
+(use-package color-theme-sanityinc-tomorrow
+  :straight t
   :config
+  (load-theme 'sanityinc-tomorrow-day t))
+(use-package diminish
+  :straight t
+  :config
+  (diminish 'visual-line-mode "warp")
+  (diminish 'eldoc-mode "doc")
+  (diminish 'org-indent-mode "ind"))
+(use-package hide-mode-line
+  :straight t
+  :commands (hide-mode-line-mode)) ;;lazy-load
+(use-package doom-modeline
+  :straight t
+  :init (doom-modeline-mode 1)
+  :config
+  (setq doom-modeline-buffer-encoding 'never))
+;; builtin
+(winner-mode t)
+(use-package which-key
+  :straight t
+  :diminish which-key-mode
+  :init
   (which-key-mode 1))
 (use-package recentf
-  :config
+  :init
   (recentf-mode 1)
-  (setq recentf-max-menu-item 200))
-;; window
-(winner-mode t)
+  :config
+  (setq recentf-max-menu-item 200)
+  (setq recentf-exclude
+	'("\\.git$"
+	  "\\.eld$"
+	  "~/.emacs.d/emms/"
+	  "~/.emacs.d/history"
+	  "~/.emacs.d/saveplace")))
 (use-package bookmark
   :config
   (setq bookmark-save-flag 1)
   (setq bookmark-default-file "~/.emacs.d/bookmarks.eld")
-  (bookmark-load bookmark-default-file t))
-;;;; packages
-;;;;;; essential
-(use-package orderless
-  :straight t
-  :custom
-  (completion-styles '(orderless basic)))
-(use-package marginalia
-  :straight t
-  :config  (marginalia-mode t))
-(use-package vertico
-  :straight t
-  :bind (:map vertico-map
-	     ("RET" . vertico-directory-enter)
-	     ("DEL" . vertico-directory-delete-word)
-	     ("M-DEL" . vertico-directory-delete-char))
-  :init
-  (vertico-mode)
-  :config
-  (setq vertico-count 10
-	vertico-cycle t)
-  (vertico-multiform-mode 1))
+  (bookmark-load bookmark-default-file t)
+  (bookmark-maybe-load-default-file))
 (use-package savehist
   :init
   (savehist-mode)
@@ -138,12 +165,33 @@
 	  shell-command-history)))
 (use-package saveplace
   :ensure nil
-  :command t
   :init
   (setq save-place-file "~/.emacs.d/saveplace")
-  :config
+  :config  
   (setq save-place-forget-unreadable-files t)
   (save-place-mode +1))
+;; completion suit
+(use-package orderless
+  :straight t
+  :custom
+  (completion-styles '(orderless basic)))
+(use-package vertico
+  :straight t
+  :bind (:map vertico-map
+	 ("RET" . vertico-directory-enter)
+	 ("DEL" . vertico-directory-delete-word)
+	 ("M-DEL" . vertico-directory-delete-char))
+  :init
+  (vertico-mode)
+  :config
+  (setq vertico-count 10
+	vertico-cycle t)
+  (vertico-multiform-mode 1))
+(use-package marginalia
+  :straight t
+  :after vertico
+  :init
+  (marginalia-mode 1))
 (use-package corfu
   :straight t
   :init
@@ -151,7 +199,8 @@
   :custom
   (corfu-auto t)
   (corfu-cycle t)
-  (corfu-auto-delay 0.2)
+  (corfu-auto-delay 0.5)
+  (corfu-quit-no-match t)
   (corfu-auto-prefix 2)
   (corfu-min-width 40)
   (corfu-max-width 100)
@@ -168,6 +217,12 @@
   :config
   (unless (display-graphic-p)
     (corfu-terminal-mode +1)))
+(use-package nerd-icons-corfu
+  :ensure t
+  :after corfu
+  :init
+  (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
+;; embark, consult
 (use-package embark-consult
   :straight t
   :after (embark consult)
@@ -179,8 +234,13 @@
 (use-package consult
   :straight t
   :bind (("C-x r" . consult-recent-file)))
+;; Editor:
+;; improved auto-save, undo and editing experience
 (use-package super-save
   :straight t
+  :diminish (super-save-mode . "save")
+  :init
+  (super-save-mode +1)
   :custom
   (super-save-auto-save-when-idle t)
   (super-save-idle-duration 5)
@@ -191,16 +251,17 @@
 			 next-buffer
 			 previous-buffer))
   (super-save-max-buffer-size 10000000)
-  (super-save-silent t)
-  :init
-  (super-save-mode +1))
+  (super-save-silent t))
 (use-package vundo
   :straight t
   :bind (("C-x u" . vundo))
   :config
   (setq vundo-glyph-alist vundo-unicode-symbols))
+(use-package cua-base
+  :bind (("C-RET" . cua-set-rectangle-mark)))
 (use-package smartparens
   :straight t
+  :diminish (smartparens-mode . "paren")
   :config
   ;; Load default smartparens rules for various languages
   (require 'smartparens-config)
@@ -233,7 +294,9 @@
              ;; genuinely want to start a new form in the middle of a word.
              :unless '(sp-point-before-word-p sp-point-before-same-p)))
   (smartparens-global-mode t))
-;;;;;; org-mode
+;; org-mode family:
+;; org-roam, org-modern, org-appear, org-ql, org-super-agenda
+(setq straight-built-in-pseudo-packages '(org))
 (use-package org
   :straight t
   :hook (org-mode . org-indent-mode)
@@ -242,60 +305,43 @@
   (setq org-agenda-files (list "~/org/agenda" "~/org/roam/daily"))
   (setq org-ellipsis "…")
   (setq org-fontify-whole-heading-line t)
-  (setq org-pretty-entities t))
+  (setq org-pretty-entities t)
+  (setq org-html-validation-link nil))
 (use-package org-roam
   :straight t
   :after org
-;;:custom
-;;(org-roam-directory "c:/Users/your-name/org/roam")
-;;;; this line help org-roam to act with "[[" to pop up compeletion list to select an existed node,
-;;;; or "[[roam:" to launch org-roam-capture to get a new node that will be inserted the point.
-;;(org-roam-complete-everywhere t)
+  :custom
+  (org-roam-directory "~/org/roam")
+  (org-roam-complete-everywhere t)
   :config
   (org-roam-db-autosync-mode))
 (use-package org-roam-ui
   :straight t
+  :defer t
+  :commands (org-roam-ui-open)
   :after org-roam)
 (use-package org-ql
   :straight t
+  :defer t
   :after org)
 (use-package org-roam-ql
   :straight t
-  :after org-roam org-ql
-  )
+  :defer t
+  :after org-roam org-ql)
+(defun my/org-agenda-today ()
+  (interactive)
+  (org-agenda nil "a")
+  (org-agenda-log-mode))
 (use-package org-super-agenda
   :straight t
   :after org
+  :defer t
   :hook (org-agenda-mode . org-super-agenda-mode))
-
-;;;;;; evil-mode
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (use-package evil				                 	  ;;
-;;  :straight t						                      ;;
-;;  :init						                          ;;
-;;  (setq evil-want-keybinding nil)			              ;;
-;;  (setq evil-want-C-u-scroll t)			              ;;
-;;  :config						                          ;;
-;;  (evil-mode))				                      	  ;;
-;; (define-key evil-normal-state-map (kbd "：") 'evil-ex) ;;
-;; (use-package evil-org			                	  ;;
-;;  :straight t					                    	  ;;
-;;  :after evil org				                    	  ;;
-;;  :hook						                          ;;
-;;  (org-mode . evil-org-mode))			             	  ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; beautify
-;;;; theme
-(use-package color-theme-sanityinc-tomorrow
-  :straight t
-  :config
-  (load-theme 'sanityinc-tomorrow-day t))
-;;;; for org-mode
 (use-package org-modern
   :straight t
+  :defer t
   :after org
-  :hook
-  (org-mode . org-modern-mode)
+  :hook (org-mode . org-modern-mode)
   :custom
   (org-modern-hide-stars nil)
   (org-modern-star nil)
@@ -312,66 +358,72 @@
   (org-modern-keyword nil))
 (use-package org-appear
   :straight t
-  :hook
-  (org-mode . org-appear-mode)
+  :after org
+  :defer t
+  :hook (org-mode . org-appear-mode)
   :init
   (setq org-hide-emphasis-markers t
 	org-appear-autoemphasis t
 	org-appear-autolinks nil
 	org-appear-autosubmarkers t))
-;;;;modeline
-(use-package hide-mode-line
+;; extended tools for programming management
+(use-package helpful
   :straight t
-  :commands (hide-mode-line-mode))
-(use-package doom-modeline
+  :bind (("C-h f" . helpful-callable)
+	 ("C-h v" . helpful-variable)
+	 ("C-h k" . helpful-key)
+	 ("C-h x" . helpful-command)
+	 ("C-h C-a" . helpful-at-point)
+	 ("C-h F" . helpful-function)))
+(use-package treesit
+  :straight nil
+  :custom
+  (treesit-font-lock-level 4))
+(use-package treesit-auto			     
+  :straight t				     	     
+  :after treesit
+  :defer t
+  :custom					     
+  (treesit-auto-install 'prompt)		     
+  :config					     
+  ;;(setq treesit-auto-langs '(python yaml lisp))    
+  (treesit-auto-add-to-auto-mode-alist 'all)	     
+  (global-treesit-auto-mode))
+(use-package flycheck
   :straight t
-  :init (doom-modeline-mode 1)
-  :config
-  (setq doom-modeline-buffer-encoding 'nondefault))
-(column-number-mode)
-;; my quick
-;;;; org-agenda
-(defun my/org-agenda-today ()
-  (interactive)
-  (org-agenda nil "a")
-  (org-agenda-log-mode))
-;; keybinding
-(use-package general
-  :straight t)
+  :defer t)
 (use-package magit
   :straight t
+  :defer t
   :init
   (defun my/magit-version-override (&rest _) "4.4.2")
   (advice-add 'magit-version :override #'my/magit-version-override))
+(use-package annotate
+  :straight t
+  :diminish (annotate-mode . "anno")
+  :defer t)
 (use-package neotree
   :straight t
   :defer t
-  :bind (("C-x D" . neotree-toggle)))
+  :bind (("C-x D" . neotree-toggle))
+  :config
+  (setq neo-theme 'nerd-icons))	     	
+;; useful
+(use-package pangu-spacing
+  :straight t
+  :diminish (pangu-spacing-mode . "pangu")
+  :after org org-roam 
+  :hook (org-mode . pangu-spacing-mode))
 (use-package tldr
   :straight t
+  :commands (tldr)
   :config
-  (setq tldr-enabled-categories '("common"
-				  "linux"
-				  "osx"
-				  "sunos")))
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (use-package dashboard			                	   ;;
-;;   :straight t				                    	   ;;
-;;   :config					                    	   ;;
-;;   (setq dashboard-banner-logo-title "")		           ;;
-;;   (setq dashboard-init-info "")			               ;;
-;;   (setq dashboard-startup-banner "")	             	   ;;
-;;   (setq dashboard-center-content t)	         	       ;;
-;;   (setq dashboard-vertically-center-content t)	       ;;
-;;   (setq dashboard-items '((recents . 5)))		       ;;
-;;   (setq dashboard-item-shortcuts '((recents . "r")))    ;;
-;;   (dashboard-setup-startup-hook))			           ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+  (setq tldr-enabled-categories '("common" "linux" "osx" "sunos")))
 (use-package writeroom-mode
   :straight t)
-
-;; Windows user with straight.el
+(use-package sdcv
+  :straight t)
+;; Guide to install emacs-reader, for Windows user with straight.el
 ;; 1. Install MSYS2
 ;; 2. Open MSYS2 shell, usually MinGW64 or UCRT64,
 ;;    update packages first, run: pacman -Syu
@@ -383,22 +435,56 @@
 ;; 4. Copy your built "reader-core.dll" by hand,
 ;;    from .../straight/repos/emacs-reader
 ;;    to   .../straight/builds/reader
-;;    Or run in bash shell: "cp ~/emacs.d/straight/repos/emacs-reader/reader-core.dll \
-;;                              ~/emacs.d/straight/builds/reader"
+;;    Run: "cp ~/emacs.d/straight/repos/emacs-reader/reader-core.dll \
+;;             ~/emacs.d/straight/builds/reader"
 (use-package reader
+  :defer t
   :straight '(reader :type git :host codeberg :repo "divyaranjan/emacs-reader"
   		     :files ("*.el" "render-core.so")
   		     :pre-build ("make" "all")))
-
-;; major modes
-(use-package csound-mode
+;; emms
+(use-package emms
   :straight t
-  :mode ("\\.csd\\'" "\\.orc\\'" "\\.sco\\'")
-  :bind (:map csound-mode-map
-	      ("C-c C-p" . csound-play)
-	      ("C-c C-k" . csound-stop))
-  :hook (csound-mode . (lambda ()
-			 (setq-local comment-start ";")
-			 (setq-local comment-end "")))
-  :custom
-  (csound-flags "-odac"))
+  :defer t
+  :init
+  (setq emms-player-list '(emms-player-ffplay))
+  :config
+  (require 'emms-setup)
+  (emms-all)
+  (define-emms-simple-player ffplay '(file url)
+			     (regexp-opt '(".mp3" ".flac" ".wav" ".opus" ".ogg" ".m4a" ".aac"))
+			     "ffplay" "-nodisp" "-autoexit" "-loglevel" "quiet") 
+  ;; (setq emms-source-file-default-directory "c:/music/")
+  (setq emms-source-file-directory-tree-function 'emms-source-file-directory-tree-internal)
+  (setq emms-info-functions '(emms-info-native)))
+
+;; major modes for other langs
+(use-package ledger-mode
+  :straight t
+  :defer t)
+
+;; keybinding
+;; (use-package general
+;;   :straight t
+;;   :after which-key
+;;   :config
+;;   (general-create-definer my/leader
+;;     :keymaps 'override
+;;     :prefix "C-c")
+;;   (my/leader
+;;     ;;agenda
+;;     "a"  '(:ignore t :which-key "agenda")
+;;     "aa" 'my/org-agenda-today
+;;     ;;bookmark
+;;     "b"  '(:ignore t :which-key "bookmark")
+;;     "bs" 'bookmark-set
+;;     "bj" 'bookmark-jump
+;;     ;;file
+;;     "f"  '(:ignore t :which-key "file")
+;;     "ff" 'find-file
+;;     "fr" 'consult-recent-file
+;;     "fm" 'make-directory
+;;     ;;project
+;;     "p"  '(:ignore t :which-key "project")
+;;     "pd" 'project-dired
+;;   ))
