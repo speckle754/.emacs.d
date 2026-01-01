@@ -1,10 +1,50 @@
-# .emacs.d 
-我的一个简易的基底式的 Emacs 配置。  
-**使用请注意裁剪配置。**  
-**目前仅限 Windows 平台。**  
-## 1. 怎么用（中文版施工中，缓更）  
-### 1.1 前置准备
-#### 1.1.1 安装字体
+# .emacs.d 我的一个简易的基底式的 Emacs 配置
+***使用请注意裁剪配置。***   
+***目前仅限 MSYS2 Windows 平台。***   
+## 1. 前置准备
+### 1.1 对于 Windows，需要额外配置 MSYS2 环境
+不推荐使用 scoop 包管理安装，推荐前往 MSYS2 官网下载 installer 手动安装。  
+常见安装位置为“C:/msys64”，提供了多个 Terminal 客户端提供 Linux 环境模拟，我们使用里面的 MinGW64 即可。  
+**需要安装位置和你选择的 shell 写入 Windows 系统变量即 PATH 列表的第一位。**    
+***或***在配置文件前部加入类似以下 elisp 代码的片段告知 Emacs 它的位置：  
+``` elisp
+(setenv "PATH" (concat "c:/msys64/mingw64/bin;" (getenv "PATH")))
+```
+### 1.2 使用 MSYS2 的包管理器安装 Windows Emacs
+``` bash
+pacman -Syu
+pacman -Ss emacs | grep ucrt
+pacman -S mingw-w64-ucrt-x86_64-emacs
+pacman -S git mingw-w64-ucrt-x86_64-ripgrep
+```
+## 2. 安装本仓库的配置
+### 2.1 前置准备  
+需要学习以下 Emacs 操作：  
+``` text
+C-x C-f => find-file => 寻找文件并打开。  
+M-x eval-buffer => 重新评估（eval）当前缓冲区（buffer）。  
+                   通常对 init.el 执行该操作。  
+                   Emacs 将检查包的安装，可以理解在没有正确安装的情况下再次尝试，  
+                   该命令也适用于修改 init.el 后重新让 Emacs 读取配置，但有局限性有时候需要重启。   
+```
+### 2.2 安装配置
+``` text 
+a. 将本仓库的 early-init.el 与 init.el 放入“你的家目录”下的 .emacs.d 文件夹即可。    
+b. 然后打开 Emacs，会自动安装，可以尝试多次重启。
+```
+如果不知道通常也就是默认的 .emacs.d 位置，  
+可以先可以先打开 Emacs，之后通过 everything 这样的搜索工具查看文件夹位置，  
+之后删除自动生成的文件重新放入即可。  
+### 2.3 提示
+因为使用 straight.el 进行包管理，    
+即字面意思直接从远程软件镜像源和仓库进行拉取。  
+在直接从 git 仓库拉取的时候，可能会比较缓慢。  
+Emacs 在比较新的版本会自动编译（native-compile）插件的 .el 文件到 .elc 字节码或 .eln 机器码，    
+目的是加快运行速度。  
+在一个典型的插件安装过程里，通常会出现编译过程的保护性报错，  
+只要插件可以正确运行并且不会重复告知显式错误，忽略即可。  
+如果编译错误，尝试使用 M-x straight-rebuild-package 手动进行再编译。  
+### 2.4 （可选）安装你心仪的字体
 因为等宽字体每个字符的宽度都是一致的，因此代码对齐效果很好。  
 为了中英文显示一致中文也采用等宽字体。  
 字体英文名里的 Mono 即为等宽含义。  
@@ -17,43 +57,4 @@
 ```
 我选择的是 BlexMono Nerd Font Mono，  
 其中 Nerd Font 表明加入编程领域常见的 icon 即标识作为可显示的字体。  
-以及 Noto Sans Mono CJK SC。如何配置字体参见配置 57 行。  
-推荐安装 nerd-icons 字体。  
-#### 1.1.2 对于 Windows，需要额外配置 MinGW64 环境
-不推荐使用 scoop 包管理安装，推荐前往 MSYS2 官网下载 installer 手动安装。  
-常见安装位置为“C:/msys64”，提供了多个 Terminal 客户端模拟 Linux 环境，我们使用里面的 MinGW64 即可。  
-需要将下方的位置写入 Windows 系统变量即 PATH 列表的第一位。  
-或在配置文件开头加入该 elisp 代码告知 Emacs 它的位置：  
-``` elisp
-(setenv "PATH" (concat "C:\\msys64\\mingw64\\bin;" (getenv "PATH")))
-```
-#### 1.1.3 对于 Windows，需要额外配置 Emacs-kl 版本
-参见 https://github.com/kiennq/emacs-build  
-可以使用 scoop 或在该项目的 release 页面下载。推荐使用前者。  
-（待补充步骤）    
-### 1.2 安装
-#### 1.2.1 前置准备  
-需要学习以下 Emacs 操作：  
-``` text
-C-x C-f => find-file => 寻找文件并打开。  
-M-x eval-buffer => 重新评估（eval）当前缓冲区（buffer）。  
-                   通常对 init.el 执行该操作。  
-                   Emacs 将检查包的安装，可以理解在没有正确安装的情况下再次尝试，  
-                   该命令也适用于修改 init.el 后重新让 Emacs 读取配置，但有局限性有时候需要重启。   
-```
-#### 1.2.2 安装
-**将本仓库的 early-init.el 与 init.el 放入**  
-**你的家目录 下的 .emacs.d 文件夹即可。**    
-**然后打开 Emacs，会自动安装，可能需要多次重启。**  
-如果不知道通常也就是默认的 .emacs.d 位置，  
-可以先可以先打开 Emacs，之后通过 everything 这样的搜索工具查看文件夹位置，  
-之后删除自动生成的文件重新放入即可。  
-#### 1.2.3 提示
-因为使用 straight.el 进行包管理，    
-即字面意思直接从远程软件仓库，通常是 github 进行拉取。  
-可能会比较缓慢。  
-Emacs 在比较新的版本会自动编译（native-compile）插件的 .el 文件到 .elc 字节码或 .eln 机器码，    
-目的是加快运行速度。  
-在一个典型的插件安装过程里，通常会出现编译过程的保护性报错，  
-只要插件可以正确运行并且不会重复告知显式错误，忽略即可。  
-如果编译错误，尝试使用 M-x straight-rebuild-package 进行手动再编译。  
+以及 Noto Sans Mono CJK SC。推荐安装 nerd-icons 字体。  
