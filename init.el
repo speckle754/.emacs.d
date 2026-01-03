@@ -445,20 +445,23 @@
   		     :files ("*.el" "render-core.so")
   		     :pre-build ("make" "all")))
 ;; emms
+(use-package mpvi
+  :straight t
+  :defer t)
 (use-package emms
   :straight t
   :defer t
   :init
-  (setq emms-player-list '(emms-player-ffplay))
+  (setq emms-player-list '(emms-player-mpv))
   :config
   (require 'emms-setup)
   (emms-all)
-  (define-emms-simple-player ffplay '(file url)
-			     (regexp-opt '(".mp3" ".flac" ".wav" ".opus" ".ogg" ".m4a" ".aac"))
-			     "ffplay" "-nodisp" "-autoexit" "-loglevel" "quiet") 
-  ;; (setq emms-source-file-default-directory "c:/music/")
+  (setq emms-source-file-default-directory "c:/music/") 
   (setq emms-source-file-directory-tree-function 'emms-source-file-directory-tree-internal)
-  (setq emms-info-functions '(emms-info-native)))
+  (setq emms-info-functions '(emms-info-native))
+  ;;(setq emms-browser-covers '("Cover" "cover" "Folder" "folder")
+  (require 'mpvi-emms)
+  (mpvi-emms-integrated-mode 1))
 
 ;; major modes for other langs
 (use-package ledger-mode
