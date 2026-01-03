@@ -233,7 +233,8 @@
 ;; (global-set-key (kbd "M-.") 'embark-dwim)
 (use-package consult
   :straight t
-  :bind (("C-x r" . consult-recent-file)))
+  :bind (("C-x r" . consult-recent-file)
+		 ("C-x l" . consult-line)))
 ;; Editor:
 ;; improved auto-save, undo and editing experience
 (use-package super-save
@@ -306,7 +307,8 @@
   (setq org-ellipsis "…")
   (setq org-fontify-whole-heading-line t)
   (setq org-pretty-entities t)
-  (setq org-html-validation-link nil))
+  (setq org-html-validation-link nil)
+  (setq org-attach-id-dir "~/org/.attach/"))
 (use-package org-roam
   :straight t
   :after org
@@ -362,10 +364,10 @@
   :defer t
   :hook (org-mode . org-appear-mode)
   :init
-  (setq org-hide-emphasis-markers t
-	org-appear-autoemphasis t
-	org-appear-autolinks nil
-	org-appear-autosubmarkers t))
+  (setq org-hide-emphasis-markers t)
+  (setq org-appear-autoemphasis t)
+  (setq org-appear-autolinks nil)
+  (setq org-appear-autosubmarkers t))
 ;; extended tools for programming management
 (use-package helpful
   :straight t
