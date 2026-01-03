@@ -24,6 +24,7 @@ pacman -Syu
 pacman -Ss emacs | grep ucrt
 pacman -S mingw-w64-ucrt-x86_64-emacs
 pacman -S git mingw-w64-ucrt-x86_64-ripgrep
+pacman -S mingw-w64-ucrt-x86_64-aspell-en
 ```
 ## 2. 安装本仓库的配置
 ### 2.1 前置准备  
