@@ -192,6 +192,9 @@
   :after vertico
   :init
   (marginalia-mode 1))
+(use-package corfu-terminal
+  :straight t
+  :defer t)
 (use-package corfu
   :straight t
   :init
