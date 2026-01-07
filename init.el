@@ -468,28 +468,101 @@
   :straight t
   :defer t)
 
-;; keybinding
-;; (use-package general
-;;   :straight t
-;;   :after which-key
-;;   :config
-;;   (general-create-definer my/leader
-;;     :keymaps 'override
-;;     :prefix "C-c")
-;;   (my/leader
-;;     ;;agenda
-;;     "a"  '(:ignore t :which-key "agenda")
-;;     "aa" 'my/org-agenda-today
-;;     ;;bookmark
-;;     "b"  '(:ignore t :which-key "bookmark")
-;;     "bs" 'bookmark-set
-;;     "bj" 'bookmark-jump
-;;     ;;file
-;;     "f"  '(:ignore t :which-key "file")
-;;     "ff" 'find-file
-;;     "fr" 'consult-recent-file
-;;     "fm" 'make-directory
-;;     ;;project
-;;     "p"  '(:ignore t :which-key "project")
-;;     "pd" 'project-dired
-;;   ))
+;; defun my/...
+;; AGENDA agenda-today
+(defun my/org-agenda-today ()
+  "My shortcut to org-agenda today with log mode on."
+  (interactive)
+  (org-agenda nil "a")
+  (org-agenda-log-mode))
+;; NOTES money
+(defun my/ledger ()
+  "My shortcut to my Ledger file."
+    (interactive)                            
+    (find-file "~/org/ledger/journal.ledger"))
+;; QUICKS time-range
+(defun my/org-insert-time-range ()
+  "Choose a past time then insert the time range to now time."
+  (interactive)
+  (let* ((current-time (current-time))
+	 (now-string (format-time-string "%Y-%m-%d %a %H:%M" current-time))
+	 (chosen-time (org-read-date nil nil nil "Begin date:" nil nil t))
+	 (chosen-parsed (parse-time-string chosen-time))
+	 (chosen-formated (format-time-string "%Y-%m-%d %a %H:%M"
+					      (encode-time chosen-parsed))))
+    (insert (format "[%s]--[%s]" chosen-formated now-string))))
+
+;; keybindings
+;; My Notes:
+;;  1. "<esc>" is alternative "Meta" key, not safe to be touched or set as leader.
+;;  2. Mode map should be in use-package sentence,"C-c C-?".
+;;  3. Heavy tool or major mode should be with global map "C-c M-?" (project, magit).
+;;  4. Helpful should replace "C-h ?".
+;;  5. Word oriented operations should be builtin "M-?".
+;;  6. File operation should be "C-x ?" "C-x C-?".
+;;     a. "C-x ?"
+;;        "C-x a" abbrev-mode, "C-x d" dired-mode
+;;        "C-x b" switch-buffer, "C-x k" kill-buffer
+;;     b. "C-x C-?"
+;;        "C-x C-f" find-file, "C-x C-r" find-file-read-only <= "C-x C-q" permit-editing
+;;        "C-x C-s" save-file, "C-x C-w" write-file
+;;  7. a. "C-x o" other-window. "C-x +" balance-windows.
+;;     b. "C-x ?(digit)":
+;;        "C-x 0" quit now, "C-x 1" now.
+;;        "C-x 2" open to bottom, C-x 3 open to right.
+;;        "C-x 4" other-window + actions.
+;;        "C-x 5" frame related actions.
+;;        "C-x 6" 2C-two-columns related actions.
+;;  8. "C-x <left>" "C-x <right>" is default of builtin commands "previous-buffer" and "next-buffer".
+;;  9. "C-c <left>" "C-c <right>" is default of builtin winner-mode.
+;; 10. "C-c ? ? ? ..." is completely safe.
+;;     => leader.
+(use-package general
+  :straight t
+  :after which-key
+  :defer t
+  :config
+  (general-create-definer leader
+    :keymaps 'override
+    :prefix "C-c")
+  (leader
+   ;; notes / roam node
+   "n" '(:ignore t :which-key "📔NOTES")
+   "nf" 'org-roam-node-find
+   "nt" 'org-roam-dailies-goto-today
+   "nc" 'org-roam-capture
+   "nC" 'org-roam-dailies-capture-today
+   "nm" 'my/ledger
+   ;; consult
+   "c" '(:ignore t :which-key "🔍CONSULT")
+   "cr" 'consult-recent-file
+   "cl" 'consult-line
+   "cb" 'consult-buffer
+   "cg" 'consult-ripgrep
+   ;; agenda
+   "a"  '(:ignore t :which-key "📅AGENDA")
+   "aa" 'my/org-agenda-today
+   ;; bookmark
+   "b"  '(:ignore t :which-key "🔖BOOKMARK")
+   "bs" 'bookmark-set
+   "bj" 'bookmark-jump
+   ;; emms
+   "e" '(:ignore t :which-key "🎵EMMS")
+   "eb" 'emms-browser
+   "ep" 'emms-pause
+   "eP" 'emms-previous
+   "eN" 'emms-next
+   ;; file
+   "f"  '(:ignore t :which-key "📁FILE")
+   "ff" 'find-file
+   "fr" 'consult-recent-file
+   "fm" 'make-directory
+   ;; project
+   "p"  '(:ignore t :which-key "🗄PROJECT")
+   ;; "pc" 'my/project-create-project
+   "pd" 'project-dired
+   ;; quick
+   "q" '(:ignore t :which-key "🧙QUICKS")
+   "qt" 'my/org-insert-time-range
+   "qi" 'insert-char
+   ))
