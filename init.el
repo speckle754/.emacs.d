@@ -117,7 +117,7 @@
   :straight t
   :config
   (diminish 'visual-line-mode "warp")
-  (diminish 'eldoc-mode "doc")
+  (diminish 'eldoc-mode "edoc")
   (diminish 'org-indent-mode "ind"))
 (use-package hide-mode-line
   :straight t
@@ -178,9 +178,9 @@
 (use-package vertico
   :straight t
   :bind (:map vertico-map
-	 ("RET" . vertico-directory-enter)
-	 ("DEL" . vertico-directory-delete-word)
-	 ("M-DEL" . vertico-directory-delete-char))
+	      ("RET" . vertico-directory-enter)
+	      ("DEL" . vertico-directory-delete-word)
+	      ("M-DEL" . vertico-directory-delete-char))
   :init
   (vertico-mode)
   :config
@@ -231,13 +231,16 @@
   :after (embark consult)
   :hook (embark-collect-mode . consult-preview-at-point-mode))
 (use-package embark
-  :straight t)
-(global-set-key (kbd "C-.") 'embark-act)
-;; (global-set-key (kbd "M-.") 'embark-dwim)
+  :straight t
+  :defer t
+  :bind (:map global-map
+	      ("C-." . embark-act)
+	      ("M-." .embark-dwim)))
 (use-package consult
   :straight t
-  :bind (("C-x r" . consult-recent-file)
-		 ("C-x l" . consult-line)))
+  :bind (:map global-map
+	      ("C-x r" . consult-recent-file)
+	      ("C-x l" . consult-line)))
 ;; Editor:
 ;; improved auto-save, undo and editing experience
 (use-package super-save
@@ -258,11 +261,10 @@
   (super-save-silent t))
 (use-package vundo
   :straight t
-  :bind (("C-x u" . vundo))
+  :bind (:map global-map
+	      ("C-x u" . vundo))
   :config
   (setq vundo-glyph-alist vundo-unicode-symbols))
-(use-package cua-base
-  :bind (("C-RET" . cua-set-rectangle-mark)))
 (use-package smartparens
   :straight t
   :diminish (smartparens-mode . "paren")
@@ -370,12 +372,13 @@
 ;; extended tools for programming management
 (use-package helpful
   :straight t
-  :bind (("C-h f" . helpful-callable)
-	 ("C-h v" . helpful-variable)
-	 ("C-h k" . helpful-key)
-	 ("C-h x" . helpful-command)
-	 ("C-h C-a" . helpful-at-point)
-	 ("C-h F" . helpful-function)))
+  :bind (:map global-map
+	      ("C-h f" . helpful-callable)
+	      ("C-h v" . helpful-variable)
+	      ("C-h k" . helpful-key)
+	      ("C-h x" . helpful-command)
+	      ("C-h C-a" . helpful-at-point)
+	      ("C-h F" . helpful-function)))
 (use-package treesit
   :straight nil
   :custom
@@ -406,7 +409,8 @@
 (use-package neotree
   :straight t
   :defer t
-  :bind (("C-x D" . neotree-toggle))
+  :bind (:map global-map
+	      ("C-x D" . neotree-toggle))
   :config
   (setq neo-theme 'nerd-icons))	     	
 ;; useful
@@ -421,9 +425,11 @@
   :config
   (setq tldr-enabled-categories '("common" "linux" "osx" "sunos")))
 (use-package writeroom-mode
-  :straight t)
+  :straight t
+  :commands (writeroom-mode))
 (use-package sdcv
-  :straight t)
+  :straight t
+  :defer t)
 ;; Guide to install emacs-reader, for Windows user with straight.el
 ;; 1. Install MSYS2
 ;; 2. Open MSYS2 shell, usually MinGW64 or UCRT64,
@@ -450,11 +456,10 @@
 (use-package emms
   :straight t
   :defer t
-  :init
-  (setq emms-player-list '(emms-player-mpv))
   :config
   (require 'emms-setup)
   (emms-all)
+  (setq emms-player-list '(emms-player-mpv))
   (setq emms-source-file-default-directory "c:/music/") 
   (setq emms-source-file-directory-tree-function 'emms-source-file-directory-tree-internal)
   (setq emms-info-functions '(emms-info-native))
@@ -516,6 +521,9 @@
 ;;  9. "C-c <left>" "C-c <right>" is default of builtin winner-mode.
 ;; 10. "C-c ? ? ? ..." is completely safe.
 ;;     => leader.
+(use-package cua-base
+  :bind (:map global-map
+	      ("C-RET" . cua-set-rectangle-mark)))
 (use-package general
   :straight t
   :after which-key
@@ -525,43 +533,43 @@
     :keymaps 'override
     :prefix "C-c")
   (leader
-   ;; notes / roam node
-   "n" '(:ignore t :which-key "📔NOTES")
-   "nf" 'org-roam-node-find
-   "nt" 'org-roam-dailies-goto-today
-   "nc" 'org-roam-capture
-   "nC" 'org-roam-dailies-capture-today
-   "nm" 'my/ledger
-   ;; consult
-   "c" '(:ignore t :which-key "🔍CONSULT")
-   "cr" 'consult-recent-file
-   "cl" 'consult-line
-   "cb" 'consult-buffer
-   "cg" 'consult-ripgrep
-   ;; agenda
-   "a"  '(:ignore t :which-key "📅AGENDA")
-   "aa" 'my/org-agenda-today
-   ;; bookmark
-   "b"  '(:ignore t :which-key "🔖BOOKMARK")
-   "bs" 'bookmark-set
-   "bj" 'bookmark-jump
-   ;; emms
-   "e" '(:ignore t :which-key "🎵EMMS")
-   "eb" 'emms-browser
-   "ep" 'emms-pause
-   "eP" 'emms-previous
-   "eN" 'emms-next
-   ;; file
-   "f"  '(:ignore t :which-key "📁FILE")
-   "ff" 'find-file
-   "fr" 'consult-recent-file
-   "fm" 'make-directory
-   ;; project
-   "p"  '(:ignore t :which-key "🗄PROJECT")
-   ;; "pc" 'my/project-create-project
-   "pd" 'project-dired
-   ;; quick
-   "q" '(:ignore t :which-key "🧙QUICKS")
-   "qt" 'my/org-insert-time-range
-   "qi" 'insert-char
-   ))
+    ;; notes / roam node
+    "n" '(:ignore t :which-key "📔NOTES")
+    "nf" 'org-roam-node-find
+    "nt" 'org-roam-dailies-goto-today
+    "nc" 'org-roam-capture
+    "nC" 'org-roam-dailies-capture-today
+    "nm" 'my/ledger
+    ;; consult
+    "c" '(:ignore t :which-key "🔍CONSULT")
+    "cr" 'consult-recent-file
+    "cl" 'consult-line
+    "cb" 'consult-buffer
+    "cg" 'consult-ripgrep
+    ;; agenda
+    "a"  '(:ignore t :which-key "📅AGENDA")
+    "aa" 'my/org-agenda-today
+    ;; bookmark
+    "b"  '(:ignore t :which-key "🔖BOOKMARK")
+    "bs" 'bookmark-set
+    "bj" 'bookmark-jump
+    ;; emms
+    "e" '(:ignore t :which-key "🎵EMMS")
+    "eb" 'emms-browser
+    "ep" 'emms-pause
+    "eP" 'emms-previous
+    "eN" 'emms-next
+    ;; file
+    "f"  '(:ignore t :which-key "📁FILE")
+    "ff" 'find-file
+    "fr" 'consult-recent-file
+    "fm" 'make-directory
+    ;; project
+    "p"  '(:ignore t :which-key "🗄PROJECT")
+    ;; "pc" 'my/project-create-project
+    "pd" 'project-dired
+    ;; quick
+    "q" '(:ignore t :which-key "🧙QUICKS")
+    "qt" 'my/org-insert-time-range
+    "qi" 'insert-char
+    ))
