@@ -330,10 +330,6 @@
   :straight t
   :defer t
   :after org-roam org-ql)
-(defun my/org-agenda-today ()
-  (interactive)
-  (org-agenda nil "a")
-  (org-agenda-log-mode))
 (use-package org-super-agenda
   :straight t
   :after org
