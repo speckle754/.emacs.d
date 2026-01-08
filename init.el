@@ -495,7 +495,12 @@
 	 (chosen-formated (format-time-string "%Y-%m-%d %a %H:%M"
 					      (encode-time chosen-parsed))))
     (insert (format "[%s]--[%s]" chosen-formated now-string))))
-
+;; NON-INTERACTIVE defun my/...
+(defun my/clear-echo-area-timer ()
+  "Clear emacs startup hook after ? second, by outputting a blank message."
+  (run-at-time "1 sec" nil (lambda ()
+			     (message " "))))
+(add-hook 'emacs-startup-hook #'my/clear-echo-area-timer)
 ;; keybindings
 ;; My Notes:
 ;;  1. "<esc>" is alternative "Meta" key, not safe to be touched or set as leader.
