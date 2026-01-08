@@ -16,10 +16,11 @@
 ;; - some useful tools
 ;; - emms
 ;; - major modes for other langs
-;; - keybinding
+;; - some defun my/... sentences, for keybindings and etc.
+;; - keybindings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; straight.el, use-package
+;;;; straight.el, use-package
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name
@@ -38,8 +39,8 @@
 (straight-use-package 'use-package)
 (setq straight-use-package-by-default t)
 ;; (setq straight-vc-git-default-clone-depth 'full)
-;;; straight.el, use-package ends here.
-;;; Emacs config, use-package style
+;;;; straight.el, use-package ends here.
+;;;; Emacs config, use-package style
 (use-package emacs
   :config
   ;; coding system, locale
@@ -72,6 +73,7 @@
   (hl-line-mode 1)
   (display-line-numbers-mode 0)
   (cua-mode 1)
+  (winner-mode t)
   ;; font
   (set-face-attribute 'default nil
 		      :family "BlexMono Nerd Font Mono"
@@ -107,8 +109,8 @@
 	'((width . 55)
 	  (height . 25))))
 ;; (setenv "PATH" (concat "c:/msys64/mingw64/bin;" (getenv "PATH")))
-;;;;;; Emacs config ends here, now actual packages.
-;; theme, ui, modeline
+;;;; Emacs config ends here, now actual packages.
+;;;; theme, ui, modeline
 (use-package color-theme-sanityinc-tomorrow
   :straight t
   :config
@@ -127,8 +129,7 @@
   :init (doom-modeline-mode 1)
   :config
   (setq doom-modeline-buffer-encoding 'never))
-;; builtin
-(winner-mode t)
+;;;; builtin
 (use-package which-key
   :straight t
   :diminish which-key-mode
@@ -170,7 +171,7 @@
   :config  
   (setq save-place-forget-unreadable-files t)
   (save-place-mode +1))
-;; completion suit
+;;;; completion suite
 (use-package orderless
   :straight t
   :custom
@@ -225,7 +226,7 @@
   :after corfu
   :init
   (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
-;; embark, consult
+;;;; embark, consult
 (use-package embark-consult
   :straight t
   :after (embark consult)
@@ -241,7 +242,7 @@
   :bind (:map global-map
 	      ("C-x r" . consult-recent-file)
 	      ("C-x l" . consult-line)))
-;; Editor:
+;;;; Editor:
 ;; improved auto-save, undo and editing experience
 (use-package super-save
   :straight t
@@ -300,7 +301,7 @@
              ;; genuinely want to start a new form in the middle of a word.
              :unless '(sp-point-before-word-p sp-point-before-same-p)))
   (smartparens-global-mode t))
-;; org-mode family:
+;;;; org-mode family:
 ;; org-roam, org-modern, org-appear, org-ql, org-super-agenda
 (setq straight-built-in-pseudo-packages '(org))
 (use-package org
@@ -369,7 +370,7 @@
   (setq org-appear-autoemphasis t)
   (setq org-appear-autolinks nil)
   (setq org-appear-autosubmarkers t))
-;; extended tools for programming management
+;;;; extended tools for programming management
 (use-package helpful
   :straight t
   :bind (:map global-map
@@ -413,7 +414,7 @@
 	      ("C-x D" . neotree-toggle))
   :config
   (setq neo-theme 'nerd-icons))	     	
-;; useful
+;;;; useful
 (use-package pangu-spacing
   :straight t
   :diminish (pangu-spacing-mode . "pangu")
@@ -430,7 +431,7 @@
 (use-package sdcv
   :straight t
   :defer t)
-;; Guide to install emacs-reader, for Windows user with straight.el
+;; Guide to install emacs-reader, for Windows user with MSYS2 and straight.el
 ;; 1. Install MSYS2
 ;; 2. Open MSYS2 shell, usually MinGW64 or UCRT64,
 ;;    update packages first, run: pacman -Syu
@@ -449,7 +450,7 @@
   :straight '(reader :type git :host codeberg :repo "divyaranjan/emacs-reader"
   		     :files ("*.el" "render-core.so")
   		     :pre-build ("make" "all")))
-;; emms
+;;;; emms
 (use-package mpvi
   :straight t
   :defer t)
@@ -467,12 +468,12 @@
   (require 'mpvi-emms)
   (mpvi-emms-integrated-mode 1))
 
-;; major modes for other langs
+;;;; major modes for other langs
 (use-package ledger-mode
   :straight t
   :defer t)
 
-;; defun my/...
+;;;; defun my/...
 ;; AGENDA agenda-today
 (defun my/org-agenda-today ()
   "My shortcut to org-agenda today with log mode on."
@@ -495,13 +496,13 @@
 	 (chosen-formated (format-time-string "%Y-%m-%d %a %H:%M"
 					      (encode-time chosen-parsed))))
     (insert (format "[%s]--[%s]" chosen-formated now-string))))
-;; NON-INTERACTIVE defun my/...
+;;;; NON-INTERACTIVE defun my/...
 (defun my/clear-echo-area-timer ()
   "Clear emacs startup hook after ? second, by outputting a blank message."
   (run-at-time "0 sec" nil (lambda ()
 			     (message " "))))
 (add-hook 'emacs-startup-hook #'my/clear-echo-area-timer)
-;; keybindings
+;;;; keybindings
 ;; My Notes:
 ;;  1. "<esc>" is alternative "Meta" key, not safe to be touched or set as leader.
 ;;  2. Mode map should be in use-package sentence,"C-c C-?".
