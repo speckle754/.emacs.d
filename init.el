@@ -498,7 +498,7 @@
 ;; NON-INTERACTIVE defun my/...
 (defun my/clear-echo-area-timer ()
   "Clear emacs startup hook after ? second, by outputting a blank message."
-  (run-at-time "1 sec" nil (lambda ()
+  (run-at-time "0 sec" nil (lambda ()
 			     (message " "))))
 (add-hook 'emacs-startup-hook #'my/clear-echo-area-timer)
 ;; keybindings
