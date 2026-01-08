@@ -455,7 +455,7 @@
   :defer t)
 (use-package emms
   :straight t
-  :defer t
+  :commands (emms emms-browser)
   :config
   (require 'emms-setup)
   (emms-all)
