@@ -79,28 +79,18 @@
 		      :family "BlexMono Nerd Font Mono"
 		      :height 135
 		      :weight 'regular)
+  ;; Even it's "variable-pitch", I would still use Mono font here.
   (set-face-attribute 'variable-pitch nil
 		      :family "BlexMono Nerd Font Mono"
 		      :height 135
 		      :weight 'regular)
-  (set-fontset-font t 'han
-		    (font-spec
-		     :family "Noto Sans Mono CJK SC"
-		     :weight 'regular))
-  (set-fontset-font t 'cjk-misc
-		    (font-spec
-		     :family "Noto Sans Mono CJK SC"
-		     :weight 'regular))
-  (set-fontset-font t '(#x1f300 . #x1fad0)
-		    (font-spec
-		     :family "Segoe UI Emoji"
-		     :weight 'regular)
-		    nil 'prepend)
-  (set-fontset-font t 'unicode
-		    (font-spec
-		     :family "Noto Sans Mono CJK SC"
-		     :weight 'regular)
-		    nil 'prepend)
+  ;; They automatically fallback to "default" style of height and weight.
+  (set-fontset-font t 'han (font-spec :family "Noto Sans Mono CJK SC"))
+  (set-fontset-font t 'cjk-misc (font-spec :family "Noto Sans Mono CJK SC"))
+  ;; Expand the left from "#x1fad0" to "#x1faff".
+  (set-fontset-font t '(#x1f300 . #x1faff) (font-spec :family "Segoe UI Emoji"))
+  ;; It uses "nil 'append" to add the font to the end of font alist, to catch rest unicode characters. 
+  (set-fontset-font t 'unicode (font-spec :family "Noto Sans Mono CJK SC") nil 'append)
   ;; frame size
   (setq initial-frame-alist
 	'((width . 55)
