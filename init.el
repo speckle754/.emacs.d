@@ -72,8 +72,15 @@
   (column-number-mode 1)
   (hl-line-mode 1)
   (display-line-numbers-mode 0)
-  (cua-mode 1)
-  (winner-mode t)
+  ;; cua-mode -> keybindings section
+  ;; (cua-mode 1)
+  (winner-mode 1)
+  ;; explicit declaration of default turned on windmove-mode.
+  (windmove-mode 1)
+  (setq display-time-default-load-average nil)
+  (setq display-time-24hr-format t)
+  ;; (setq display-time-format "%H:%M")
+  (display-time-mode 1)
   ;; font
   (set-face-attribute 'default nil
 		      :family "BlexMono Nerd Font Mono"
@@ -490,7 +497,9 @@
 (defun my/clear-echo-area-timer ()
   "Clear emacs startup hook after ? second, by outputting a blank message."
   (run-at-time "0 sec" nil (lambda ()
-			     (message " "))))
+			     (message "")
+			     (run-at-time "0 sec" nil (lambda ()
+							(message ""))))))
 (add-hook 'emacs-startup-hook #'my/clear-echo-area-timer)
 ;;;; keybindings
 ;; My Notes:
@@ -517,6 +526,7 @@
 ;;  9. "C-c <left>" "C-c <right>" is default of builtin winner-mode.
 ;; 10. "C-c ? ? ? ..." is completely safe.
 ;;     => leader.
+(cua-mode 1)
 (use-package cua-base
   :bind (:map global-map
 	      ("C-RET" . cua-set-rectangle-mark)))
@@ -544,12 +554,12 @@
     "cb" 'consult-buffer
     "cg" 'consult-ripgrep
     ;; agenda
-    "a"  '(:ignore t :which-key "📅AGENDA")
+    "a" '(:ignore t :which-key "📅AGENDA")
     "aa" 'my/org-agenda-today
     ;; buffer and associated actions (bookmark)
     ;; need to mention that here:
     ;; C-c <left>, C-c <right> is the default winner-mode keybindings.
-    "b"  '(:ignore t :which-key "📑BUFFER")
+    "b" '(:ignore t :which-key "📑BUFFER")
     "bb" 'bury-buffer
     "bu" 'unbury-buffer
     "bs" 'bookmark-set
@@ -561,12 +571,12 @@
     "eP" 'emms-previous
     "eN" 'emms-next
     ;; file
-    "f"  '(:ignore t :which-key "📁FILE")
+    "f" '(:ignore t :which-key "📁FILE")
     "ff" 'find-file
     "fr" 'consult-recent-file
     "fm" 'make-directory
     ;; project
-    "p"  '(:ignore t :which-key "🗄PROJECT")
+    "p" '(:ignore t :which-key "🗄PROJECT")
     ;; "pc" 'my/project-create-project
     "pp" 'project-dired
     ;; same to, C-x p k, but I still do this map here.
@@ -574,7 +584,8 @@
     ;; quick
     "q" '(:ignore t :which-key "🧙QUICKS")
     "qt" 'my/org-insert-time-range
-    "qc" 'insert-char
+    ;; respect original C-x 8 RET
+    "q RET" 'insert-char
     ;; use emoji-search to replace emoji-insert
     ;; also, C-x 8 e s
     "qe" 'emoji-search
