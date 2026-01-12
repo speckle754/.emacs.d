@@ -520,6 +520,7 @@
 (use-package cua-base
   :bind (:map global-map
 	      ("C-RET" . cua-set-rectangle-mark)))
+(global-set-key (kbd "C-S-s") 'set-mark-command)
 (use-package general
   :straight t
   :after which-key
@@ -545,9 +546,13 @@
     ;; agenda
     "a"  '(:ignore t :which-key "📅AGENDA")
     "aa" 'my/org-agenda-today
-    ;; bookmark
-    "b"  '(:ignore t :which-key "🔖BOOKMARK")
-    "bb" 'bookmark-set
+    ;; buffer and associated actions (bookmark)
+    ;; need to mention that here:
+    ;; C-c <left>, C-c <right> is the default winner-mode keybindings.
+    "b"  '(:ignore t :which-key "📑BUFFER")
+    "bb" 'bury-buffer
+    "bu" 'unbury-buffer
+    "bs" 'bookmark-set
     "bj" 'bookmark-jump
     ;; emms
     "e" '(:ignore t :which-key "🎵EMMS")
@@ -564,8 +569,13 @@
     "p"  '(:ignore t :which-key "🗄PROJECT")
     ;; "pc" 'my/project-create-project
     "pp" 'project-dired
+    ;; same to, C-x p k, but I still do this map here.
+    "pk" 'project-kill-buffers
     ;; quick
     "q" '(:ignore t :which-key "🧙QUICKS")
     "qt" 'my/org-insert-time-range
     "qc" 'insert-char
+    ;; use emoji-search to replace emoji-insert
+    ;; also, C-x 8 e s
+    "qe" 'emoji-search
     ))
