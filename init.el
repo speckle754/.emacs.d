@@ -415,12 +415,12 @@
   :straight t
   :defer t
   :config
-  (setq tempel-path (expand-file-name "templates" user-emacs-directory)
+  (setq tempel-path (expand-file-name "templates" user-emacs-directory))
   :bind (:map global-map
 	      ("M-=" . tempel-expand)
 	      ("C-M-=" . tempel-insert)
 	      ;; Discard whole usage of poorly designed completion.
-	      ("" . tempel-complete)
+	      ;; ("" . tempel-complete)
 	      :map tempel-map
 	      ("C-g" . tempel-done)
 	      ("C-c C-k" . tempel-kill)
