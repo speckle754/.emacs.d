@@ -410,7 +410,25 @@
   :bind (:map global-map
 	      ("C-x D" . neotree-toggle))
   :config
-  (setq neo-theme 'nerd-icons))	     	
+  (setq neo-theme 'nerd-icons))
+(use-package tempel
+  :straight t
+  :defer t
+  :config
+  (setq tempel-path (expand-file-name "templates" user-emacs-directory)
+  :bind (:map global-map
+	      ("M-=" . tempel-expand)
+	      ("C-M-=" . tempel-insert)
+	      ;; Discard whole usage of poorly designed completion.
+	      ("" . tempel-complete)
+	      :map tempel-map
+	      ("C-g" . tempel-done)
+	      ("C-c C-k" . tempel-kill)
+	      ("C-c C-a" . tempel-abort)
+	      ("TAB" . tempel-next)
+	      ("S-TAB" . tempel-previous)
+	      ("C-<up>" . tempel-beginning)
+	      ("C-<down>" . tempel-end)))
 ;;;; useful
 (use-package pangu-spacing
   :straight t
@@ -425,9 +443,7 @@
 (use-package writeroom-mode
   :straight t
   :commands (writeroom-mode))
-(use-package sdcv
-  :straight t
-  :defer t)
+
 ;; Guide to install emacs-reader, for Windows user with MSYS2 and straight.el
 ;; 1. Install MSYS2
 ;; 2. Open MSYS2 shell, usually MinGW64 or UCRT64,
@@ -493,6 +509,11 @@
 	 (chosen-formated (format-time-string "%Y-%m-%d %a %H:%M"
 					      (encode-time chosen-parsed))))
     (insert (format "[%s]--[%s]" chosen-formated now-string))))
+;; TEMPLATES my/tempel-templates-file
+(defun my/tempel-templates-file ()
+  "My tempel templates file."
+  (interactive)
+  (find-file (expand-file-name "templates" user-emacs-directory)))
 ;;;; NON-INTERACTIVE defun my/...
 (defun my/clear-echo-area-timer ()
   "Clear emacs startup hook after ? second, by outputting a blank message."
@@ -589,4 +610,17 @@
     ;; use emoji-search to replace emoji-insert
     ;; also, C-x 8 e s
     "qe" 'emoji-search
+    "qc" 'count-words-region
+    "qC" 'count-words
+    ;; templates
+    "t" '(:ignore t :which-key "🧩TEMPLATES")
+    ;; "tt" this is for lowest memory burden and easy access,
+    ;; not for expanding keyword to the template,
+    ;; also, "C-M-=".
+    "tt" 'tempel-insert
+    ;; Even though we should use "M-="
+    ;; to activate tempel-expand more quickly,
+    ;; writing it here for redundancy.
+    "te" 'tempel-expand
+    "tf" 'my/tempel-templates-file
     ))
