@@ -531,7 +531,7 @@
   (leader
     ;; notes / roam node
     "n" '(:ignore t :which-key "📔NOTES")
-    "nf" 'org-roam-node-find
+    "nn" 'org-roam-node-find
     "nt" 'org-roam-dailies-goto-today
     "nc" 'org-roam-capture
     "nC" 'org-roam-dailies-capture-today
@@ -539,7 +539,7 @@
     ;; consult
     "c" '(:ignore t :which-key "🔍CONSULT")
     "cr" 'consult-recent-file
-    "cl" 'consult-line
+    "cc" 'consult-line
     "cb" 'consult-buffer
     "cg" 'consult-ripgrep
     ;; agenda
@@ -547,11 +547,11 @@
     "aa" 'my/org-agenda-today
     ;; bookmark
     "b"  '(:ignore t :which-key "🔖BOOKMARK")
-    "bs" 'bookmark-set
+    "bb" 'bookmark-set
     "bj" 'bookmark-jump
     ;; emms
     "e" '(:ignore t :which-key "🎵EMMS")
-    "eb" 'emms-browser
+    "ee" 'emms-browser
     "ep" 'emms-pause
     "eP" 'emms-previous
     "eN" 'emms-next
@@ -563,9 +563,9 @@
     ;; project
     "p"  '(:ignore t :which-key "🗄PROJECT")
     ;; "pc" 'my/project-create-project
-    "pd" 'project-dired
+    "pp" 'project-dired
     ;; quick
     "q" '(:ignore t :which-key "🧙QUICKS")
     "qt" 'my/org-insert-time-range
-    "qi" 'insert-char
+    "qc" 'insert-char
     ))
