@@ -1,0 +1,51 @@
+;; -*- mode: lisp-data -*-
+
+fundamental-mode ;; Available everywhere
+(today (format-time-string "%Y-%m-%d")
+       :ann "Today's date"
+       :doc "Insert today's date")
+
+emacs-lisp-mode
+(use "(use-package " p
+     n> ":straight t"
+     n> ":defer t"q")")
+
+org-mode
+(begin "#+begin_" (s name)
+       n> q
+       n "#+end_" name)
+
+(src "#+begin_src " p
+     n> q
+     n "#+end_SRC")
+
+(opt "#+options: \\n:t timestamp:nil date:nil num:nil" q)
+
+(now (format-time-string "[%Y-%m-%d %a %H:%M]"))
+
+(nowa (format-time-string "<%Y-%m-%d %a %H:%M>"))
+
+(log ":LOGBOOK:"
+     n ":"p": " q
+     n ":END:")
+
+(tr (p (org-read-date nil nil nil "Begin date:" nil nil t) chosen t)
+    (p (parse-time-string chosen) parsed t)
+    (p (format-time-string "%Y-%m-%d %a %H:%M" (encode-time parsed)) start t)
+    (p (format-time-string "%Y-%m-%d %a %H:%M") now t)
+    "[" start "]--[" now "]" q)
+
+(to (format-time-string "%Y-%m-%d"))
+(td (format-time-string "%Y-%m-%d"))
+(today (format-time-string "%Y-%m-%d"))
+
+(dr (p (org-read-date nil nil nil "Begin date:" nil nil t) chosen t)
+    (p (parse-time-string chosen) parsed t)
+    (p (format-time-string "%Y-%m-%d" (encode-time parsed)) start t)
+    (p (format-time-string "%Y-%m-%d") now t)
+    "[" start "]--[" now "]" q)
+
+;; Local Variables:
+;; mode: lisp-data
+;; outline-regexp: "[a-z]"
+;; End:
