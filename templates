@@ -8,7 +8,7 @@ fundamental-mode ;; Available everywhere
 emacs-lisp-mode
 (use "(use-package " p
      n> ":straight t"
-     n> ":defer t"q")")
+     n> ":defer t)" q)
 
 org-mode
 (begin "#+begin_" (s name)
@@ -29,21 +29,22 @@ org-mode
      n ":"p": " q
      n ":END:")
 
-(tr (p (org-read-date nil nil nil "Begin date:" nil nil t) chosen t)
-    (p (parse-time-string chosen) parsed t)
-    (p (format-time-string "%Y-%m-%d %a %H:%M" (encode-time parsed)) start t)
-    (p (format-time-string "%Y-%m-%d %a %H:%M") now t)
-    "[" start "]--[" now "]" q)
+(tr (p (org-read-date nil nil nil "Begin date:" nil nil t) +chosen t)
+    (p (encode-time (org-parse-time-string +chosen)) +parsed t)
+    (p (format-time-string "%Y-%m-%d %a %H:%M" +parsed) +start t)
+    (p (format-time-string "%Y-%m-%d %a %H:%M") +now t)
+    "[" +start "]--[" +now "]" q)
 
+;; redundancy
 (to (format-time-string "%Y-%m-%d"))
 (td (format-time-string "%Y-%m-%d"))
 (today (format-time-string "%Y-%m-%d"))
 
-(dr (p (org-read-date nil nil nil "Begin date:" nil nil t) chosen t)
-    (p (parse-time-string chosen) parsed t)
-    (p (format-time-string "%Y-%m-%d" (encode-time parsed)) start t)
-    (p (format-time-string "%Y-%m-%d") now t)
-    "[" start "]--[" now "]" q)
+(dr (p (org-read-date nil nil nil "Begin date:" nil nil t) +chosen t)
+    (p (org-parse-time-string +chosen) +parsed t)
+    (p (format-time-string "%Y-%m-%d" (encode-time +parsed)) +start t)
+    (p (format-time-string "%Y-%m-%d") +now t)
+    "[" +start "]--[" +now "]" q)
 
 ;; Local Variables:
 ;; mode: lisp-data
