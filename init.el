@@ -81,20 +81,27 @@
   (setq display-time-24hr-format t)
   ;; (setq display-time-format "%H:%M")
   (display-time-mode 1)
+  ;; other hacks
+  (setq calendar-date-style 'iso)
+  ;; (setq default-input-method nil)
+  (setq enable-recursive-minibuffers t)
+  (minibuffer-depth-indicate-mode 1)
   ;; font
   (set-face-attribute 'default nil
-		      :family "BlexMono Nerd Font Mono"
-		      :height 135
-		      :weight 'regular)
-  ;; Even it's "variable-pitch", I would still use Mono font here.
+		      :family "SF Mono"
+		      :height 145
+		      :weight 'regular
+		      :slant 'normal)
   (set-face-attribute 'variable-pitch nil
-		      :family "BlexMono Nerd Font Mono"
-		      :height 135
-		      :weight 'regular)
-  ;; They automatically fallback to "default" style of height and weight.
+		      :family "SF Mono"
+		      :height 145
+		      :weight 'bold)
+  ;; I misunderstood this mode previously,
+  ;; after toggle, it simply showing buffer content
+  ;; in another font. It could be helpful to temporarily change font.
+  (variable-pitch-mode 0)
   (set-fontset-font t 'han (font-spec :family "Noto Sans Mono CJK SC"))
   (set-fontset-font t 'cjk-misc (font-spec :family "Noto Sans Mono CJK SC"))
-  ;; Expand the left from "#x1fad0" to "#x1faff".
   (set-fontset-font t '(#x1f300 . #x1faff) (font-spec :family "Segoe UI Emoji"))
   ;; It uses "nil 'append" to add the font to the end of font alist, to catch rest unicode characters. 
   (set-fontset-font t 'unicode (font-spec :family "Noto Sans Mono CJK SC") nil 'append)
@@ -195,26 +202,35 @@
   :defer t)
 (use-package corfu
   :straight t
+  :defer t
+  :bind (:map corfu-map
+              ("TAB" . corfu-next)
+              ([backtab] . corfu-previous)
+              ("RET" . (lambda ()
+			 (interactive)
+			 (corfu-insert)
+			 (when (and (not (eq (following-char) ?\s))
+				    (not (eolp))
+				    (not (looking-at-p "[)]"))
+				    (not (memq (char-syntax (following-char)) '(?\) ?\>))))
+			         ;; (not (eq (char-syntax (following-char)) ?\)))
+			   ;; (corfu-quit) (next-line)
+			   (insert " "))))
+	      ([up] . (lambda () (interactive) (corfu-quit) (previous-line)))
+	      ([down] . (lambda () (interactive) (corfu-quit) (next-line))))
   :init
   (global-corfu-mode)
   :custom
   (corfu-auto t)
   (corfu-cycle t)
-  (corfu-auto-delay 0.5)
+  (corfu-auto-delay 0.2)
   (corfu-quit-no-match t)
   (corfu-auto-prefix 2)
-  (corfu-min-width 40)
-  (corfu-max-width 100)
-  (corfu-count 10)
-  (corfu-preselect 'prompt)
-  (corfu-preview-current 'insert) 
-  :bind (:map corfu-map
-              ("TAB" . corfu-next)
-              ([tab] . corfu-next)
-              ("S-TAB" . corfu-previous)
-              ([backtab] . corfu-previous)
-              ("RET" . nil)
-              ([return] . nil))
+  (corfu-min-width 15)
+  (corfu-max-width 40)
+  (corfu-count 5)
+  (corfu-preselect 'valid)
+  (corfu-preview-current 'insert)
   :config
   (unless (display-graphic-p)
     (corfu-terminal-mode +1)))
@@ -223,6 +239,24 @@
   :after corfu
   :init
   (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
+;;;; avy
+(use-package avy
+  :straight t
+  :defer t
+  :config
+  (setq avy-style 'at-full)
+  (setq avy-background t)
+  (setq avy-single-candidate-jump t)
+  (setq avy-highlight-first t)
+  (set-face-attribute 'avy-lead-face nil
+		      :background "#51afef" :foreground "white"
+                      :weight 'bold)
+  (set-face-attribute 'avy-lead-face-0 nil
+		      :background "#98be65" :foreground "white"
+                      :weight 'regular)
+  (set-face-attribute 'avy-lead-face-2 nil
+		      :background "#51afef" :foreground "white"
+		      :weight 'regular))
 ;;;; embark, consult
 (use-package embark-consult
   :straight t
@@ -502,13 +536,11 @@
 (defun my/org-insert-time-range ()
   "Choose a past time then insert the time range to now time."
   (interactive)
-  (let* ((current-time (current-time))
-	 (now-string (format-time-string "%Y-%m-%d %a %H:%M" current-time))
-	 (chosen-time (org-read-date nil nil nil "Begin date:" nil nil t))
-	 (chosen-parsed (parse-time-string chosen-time))
-	 (chosen-formated (format-time-string "%Y-%m-%d %a %H:%M"
-					      (encode-time chosen-parsed))))
-    (insert (format "[%s]--[%s]" chosen-formated now-string))))
+  (let* ((+chosen-time (org-read-date nil nil nil "Begin date:" nil nil t))
+	 (+chosen-parsed (org-parse-time-string +chosen-time))
+	 (+chosen-formated (format-time-string "%Y-%m-%d %a %H:%M" (encode-time +chosen-parsed)))
+	 (+now-string (format-time-string "%Y-%m-%d %a %H:%M")))
+    (insert (format "[%s]--[%s]" +chosen-formated +now-string))))
 ;; TEMPLATES my/tempel-templates-file
 (defun my/tempel-templates-file ()
   "My tempel templates file."
@@ -585,6 +617,8 @@
     "bu" 'unbury-buffer
     "bs" 'bookmark-set
     "bj" 'bookmark-jump
+    ;; window
+    "w" '(avy-goto-char-timer :which-key "🤠WINDOW")
     ;; emms
     "e" '(:ignore t :which-key "🎵EMMS")
     "ee" 'emms-browser
