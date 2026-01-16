@@ -1,10 +1,13 @@
 # .emacs.d 我的一个简易的基底式的 Emacs 配置
 ***使用请注意裁剪配置。***   
-***目前仅限 MSYS2 Windows 平台。***   
+***目前仅限 MSYS2 Windows 平台。***  
+人们也许会争论在 Windows 平台选择 Emacs 官网版本、WSLg、MSYS2 还是 scoop 上他人编译好的,  
+我的看法是整个 Linux 工具链用 MSYS2 提供的 pacman 管理即可，包括 Emacs。  
+scoop 仅用来发挥它本身的作用，即安装一些便携版 Windows 软件。  
 ## 1. 前置准备
 ### 1.1 对于 Windows，需要额外配置 MSYS2 环境
 不推荐使用 scoop 包管理安装，推荐前往 MSYS2 官网下载 installer 手动安装。  
-常见安装位置为“C:/msys64”，提供了多个 Terminal 终端客户端提供 Linux 环境模拟，我们使用里面的 UCRT 即可。  
+常见安装位置为“C:/msys64”，提供了多个 Terminal 终端客户端提供 Linux 环境模拟，我们使用里面的 UCRT64 即可。  
 **需要安装位置和你选择的 MSYS2 shell 写入 Windows 系统变量即 PATH 列表的第一位。**    
 ***或***在配置文件前部加入类似以下 elisp 代码的片段告知 Emacs 它的位置：  
 ``` elisp
@@ -18,7 +21,9 @@
 c:\msys64\ucrt64\bin
 c:\msys64\mingw64\bin
 ```
-### 1.2 使用 MSYS2 的包管理器安装 Windows Emacs
+### 1.2 使用 MSYS2 的包管理器 pacman 安装 Emacs
+在 Windows Terminal 里 pacman 依然具有可用性，  
+需要注意的是在进行 —Syu 指令更新后最好关闭一次终端。  
 ``` bash
 pacman -Syu
 pacman -Ss emacs | grep ucrt
@@ -31,7 +36,7 @@ pacman -S mingw-w64-ucrt-x86_64-aspell-en
 需要学习以下 Emacs 操作：  
 ``` text
 C-x C-f => find-file => 寻找文件并打开。  
-M-x eval-buffer => 重新评估（eval）当前缓冲区（buffer）。  
+M-x eval-buffer => 评估（eval）当前缓冲区（buffer）。  
                    通常对 init.el 执行该操作。  
                    Emacs 将检查包的安装，可以理解在没有正确安装的情况下再次尝试，  
                    该命令也适用于修改 init.el 后重新让 Emacs 读取配置，但有局限性有时候需要重启。   
@@ -45,25 +50,22 @@ b. 然后打开 Emacs，会自动安装，如果拉取包过程卡住，可以�
 可以先可以先打开 Emacs，之后通过 everything 这样的搜索工具查看文件夹位置，  
 之后删除自动生成的文件重新放入即可。  
 ### 2.3 提示
-因为使用 straight.el 进行包管理，    
-即字面意思直接从远程软件镜像源和仓库进行拉取。  
-在直接从 git 仓库拉取的时候，可能会比较缓慢。  
-Emacs 在比较新的版本会自动编译（native-compile）插件的 .el 文件到 .elc 字节码或 .eln 机器码，    
-目的是加快运行速度。  
-在一个典型的插件安装过程里，会出现编译过程的保护性报错，  
-只要插件可以正确运行并且不会重复告知显式错误，忽略即可。  
-如果编译错误，尝试使用 M-x straight-rebuild-package 手动进行再编译。  
+a. 因为使用 straight.el 进行包管理，    
+   即字面意思直接从远程软件镜像源和仓库进行拉取。  
+   在直接从 git 仓库拉取的时候，可能会比较缓慢。  
+b. Emacs 在比较新的版本会自动编译（native-compile）插件的 .el 文件到 .elc 字节码或 .eln 机器码，    
+   目的是加快运行速度。  
+   在一个典型的插件安装过程里，会出现编译过程的保护性报错，  
+   只要插件可以正确运行并且不会重复告知显式错误，忽略即可。  
+   如果编译错误，尝试使用 M-x straight-rebuild-package 手动进行再编译。  
 ### 2.4 （可选）安装你心仪的字体
-因为等宽字体每个字符的宽度都是一致的，因此代码对齐效果很好。  
-为了中英文显示一致中文也采用等宽字体。  
+因为英文等宽字体每个字符的宽度都是一致的，因此代码对齐效果较好。  
+也不用考虑中文字体和英文字体时候等宽，因为代码基本上只会用英文字符去写。  
 字体英文名里的 Mono 即为等宽含义。  
-有一些中文字体同时含有英文字符集，最终视觉效果更统一。  
-需要注意的是，需要选择字体提供的系列里的 Mono ，也就是等宽的样式。  
-常见的有：  
-``` text
-基于 Noto Sans 出品的 Sarasa Gothic 更纱黑体。
-基于 Klee One 出品的 LXGW WenKai 霞鹜文楷。
-```
-我选择的是 BlexMono Nerd Font Mono，详细可搜索 Nerd Font 官网查看。    
-其中 Nerd Font 表明这款字体补充了该字体集，即加入编程领域常见的 icon 标识作为可显示的字体。  
-以及 Noto Sans Mono CJK SC。推荐安装 nerd-icons 字体。  
+通常为了中英文混写时候的表格对齐，中文采用等宽字体更好。  
+有一些中文字体同时含有英文字符集，视觉效果会更统一。  
+在 Windows 搜索框或设置里键入 “字体” 以到达字体安装列表。
+需要注意的是，写入配置的时候需要选择字体提供的系列里的 Mono ，也就是等宽的样式。  
+我选择的是英文字体 SF Mono 和 中文字体 PingFang SC。  
+在 Windows 平台上显示也不错，这里不再推荐其余字体，  
+它们可能会导致 minibuffer 和文内行高被顶起。且整体有臃肿感、视觉容易疲劳。  
