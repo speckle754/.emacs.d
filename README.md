@@ -23,7 +23,7 @@ c:\msys64\mingw64\bin
 ```
 ### 1.2 使用 MSYS2 的包管理器 pacman 安装 Emacs
 在 Windows Terminal 里 pacman 依然具有可用性，  
-需要注意的是在进行 —Syu 指令更新后最好关闭一次终端。  
+需要注意的是在进行 -Syu 指令更新后最好关闭一次终端。  
 ``` bash
 pacman -Syu
 pacman -Ss emacs | grep ucrt
