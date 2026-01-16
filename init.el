@@ -58,7 +58,8 @@
   (setq inhibit-startup-screen t)
   (setq initial-scratch-message nil)
   (setq inhibit-splash-screen t)
-  (setq inhibit-startup-echo-area-message "__") ;; Here, write the value of: C-h v user-login-name
+  (put 'inhibit-startup-echo-area-message 'saved-value [t])
+  (setq inhibit-startup-echo-area-message (user-login-name))
   ;; some better faces
   (fset 'yes-or-no-p 'y-or-n-p)
   (setq frame-title-format "%b")
