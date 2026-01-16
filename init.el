@@ -99,12 +99,15 @@
   ;; I misunderstood this mode previously,
   ;; after toggle, it simply showing buffer content
   ;; in another font. It could be helpful to temporarily change font.
+  ;; Also, I found the variable-pitch defining some cursor-point-to-float-up info.
   (variable-pitch-mode 0)
-  (set-fontset-font t 'han (font-spec :family "Noto Sans Mono CJK SC"))
-  (set-fontset-font t 'cjk-misc (font-spec :family "Noto Sans Mono CJK SC"))
+  (set-fontset-font t 'han (font-spec :family "PingFang SC"))
+  (set-fontset-font t 'cjk-misc (font-spec :family "PingFang SC"))
   (set-fontset-font t '(#x1f300 . #x1faff) (font-spec :family "Segoe UI Emoji"))
+  ;; single patch to emacs warning character.
+  (set-fontset-font t '(#x026D4 . #x026D4) (font-spec :family "Segoe UI Emoji"))
   ;; It uses "nil 'append" to add the font to the end of font alist, to catch rest unicode characters. 
-  (set-fontset-font t 'unicode (font-spec :family "Noto Sans Mono CJK SC") nil 'append)
+  (set-fontset-font t 'unicode (font-spec :family "PingFang SC") nil 'append)
   ;; frame size
   (setq initial-frame-alist
 	'((width . 55)
@@ -132,7 +135,9 @@
   :straight t
   :init (doom-modeline-mode 1)
   :config
-  (setq doom-modeline-buffer-encoding 'never))
+  (setq doom-modeline-buffer-encoding 'never)
+  (setq doom-modeline-buffer-modification-icon nil)
+  (setq doom-modeline-icon nil))
 ;;;; builtin
 (use-package which-key
   :straight t
@@ -148,13 +153,14 @@
 	'("\\.git$"
 	  "\\.eld$"
 	  "~/.emacs.d/emms/"
+	  "~/.emacs.d/straight/"
 	  "~/.emacs.d/history"
+	  "~/.emacs.d/bookmarks"
 	  "~/.emacs.d/saveplace")))
 (use-package bookmark
   :config
   (setq bookmark-save-flag 1)
-  (setq bookmark-default-file "~/.emacs.d/bookmarks.eld")
-  (bookmark-load bookmark-default-file t)
+  (setq bookmark-default-file "~/.emacs.d/bookmarks")
   (bookmark-maybe-load-default-file))
 (use-package savehist
   :init
@@ -216,6 +222,8 @@
 			         ;; (not (eq (char-syntax (following-char)) ?\)))
 			   ;; (corfu-quit) (next-line)
 			   (insert " "))))
+	      ([left] . (lambda () (interactive) (corfu-quit) (left-char)))
+	      ([right] . (lambda () (interactive) (corfu-quit) (right-char)))
 	      ([up] . (lambda () (interactive) (corfu-quit) (previous-line)))
 	      ([down] . (lambda () (interactive) (corfu-quit) (next-line))))
   :init
@@ -277,7 +285,7 @@
 ;; improved auto-save, undo and editing experience
 (use-package super-save
   :straight t
-  :diminish (super-save-mode . "save")
+  :diminish (super-save-mode . "su-save")
   :init
   (super-save-mode +1)
   :custom
@@ -337,7 +345,7 @@
 (setq straight-built-in-pseudo-packages '(org))
 (use-package org
   :straight t
-  :hook (org-mode . org-indent-mode)
+  ;; :hook (org-mode . org-indent-mode)
   :config
   (setq org-directory "~/org")
   (setq org-agenda-files (list "~/org/agenda" "~/org/roam/daily"))
@@ -345,7 +353,26 @@
   (setq org-fontify-whole-heading-line t)
   (setq org-pretty-entities t)
   (setq org-html-validation-link nil)
-  (setq org-attach-id-dir "~/org/.attach/"))
+  (setq org-attach-id-dir "~/org/.attach/")
+  (setq org-return-follows-link nil)
+  (setq org-attach-auto-tag nil)
+  (setq org-read-date-popup-calendar t)
+  (setq org-read-date-display-live t))
+;; for org-mode-export-to-html
+(use-package htmlize
+  :straight t
+  :defer t)
+;; (use-package citar
+;;   :straight t
+;;   :defer t
+;;   :custom
+;;   (org-cite-global-bibliography '("~/org/bib/biblatex-examples.bib"))
+;;   (org-cite-insert-processor 'citar)
+;;   (org-cite-follow-processor 'citar)
+;;   (org-cite-activate-processor 'citar)
+;;   (citar-bibliography org-cite-global-bibliography)
+;;   (citar-notes-paths '("~/org/roam/citar/"))
+;;   (citar-file-notes-extensions '(org)))
 (use-package org-roam
   :straight t
   :after org
@@ -372,25 +399,6 @@
   :after org
   :defer t
   :hook (org-agenda-mode . org-super-agenda-mode))
-(use-package org-modern
-  :straight t
-  :defer t
-  :after org
-  :hook (org-mode . org-modern-mode)
-  :custom
-  (org-modern-hide-stars nil)
-  (org-modern-star nil)
-  (org-modern-list
-   '((?+ . "•")
-     (?- . "•")
-     (?* . "•")))
-  (org-modern-timestamp nil)
-  (org-modern-progress 5)
-  (org-modern-table nil)
-  (org-modern-block-name nil)
-  (org-modern-block-fringe nil)
-  (org-modern-priority nil)
-  (org-modern-keyword nil))
 (use-package org-appear
   :straight t
   :after org
@@ -477,6 +485,12 @@
 (use-package writeroom-mode
   :straight t
   :commands (writeroom-mode))
+(when (eq system-type 'windows-nt)
+  (use-package consult-everything
+    :after consult
+    :defer t
+    :straight (consult-everything :host github :repo "jthaman/consult-everything")))
+
 
 ;; Guide to install emacs-reader, for Windows user with MSYS2 and straight.el
 ;; 1. Install MSYS2
@@ -503,7 +517,9 @@
   :defer t)
 (use-package emms
   :straight t
-  :commands (emms emms-browser)
+  :commands (emms emms-browser emms-smart-browse)
+  :bind (:map emms-browser-mode-map
+	      ("s" . emms-smart-browse))
   :config
   (require 'emms-setup)
   (emms-all)
@@ -516,9 +532,20 @@
   (mpvi-emms-integrated-mode 1))
 
 ;;;; major modes for other langs
-(use-package ledger-mode
-  :straight t
-  :defer t)
+;; (use-package ledger-mode
+;;   :straight t
+;;   :defer t)
+;; (use-package markdown-mode
+;;   :straight t
+;;   :defer t)
+;; (use-package grip-mode
+;;   :straight t
+;;   :defer t)
+;; (use-package slime
+;;   :straight t
+;;   :defer t
+;;   :config
+;;   (setq inferior-lisp-program "sbcl"))
 
 ;;;; defun my/...
 ;; AGENDA agenda-today
@@ -584,6 +611,10 @@
   :bind (:map global-map
 	      ("C-RET" . cua-set-rectangle-mark)))
 (global-set-key (kbd "C-S-s") 'set-mark-command)
+
+;; (global-set-key (kbd "M-j") 'avy-goto-char-timer)
+;; (global-set-key (kbd "M-l") 'consult-line)
+
 (use-package general
   :straight t
   :after which-key
@@ -606,6 +637,10 @@
     "cc" 'consult-line
     "cb" 'consult-buffer
     "cg" 'consult-ripgrep
+    ;; everything, using es.exe
+    ;; scoop install es
+    ;; es.exe -instance 1.5a -savesettings
+    "g" '(consult-everything :which-key "🔎EVERYTHING")
     ;; agenda
     "a" '(:ignore t :which-key "📅AGENDA")
     "aa" 'my/org-agenda-today
@@ -613,7 +648,8 @@
     ;; need to mention that here:
     ;; C-c <left>, C-c <right> is the default winner-mode keybindings.
     "b" '(:ignore t :which-key "📑BUFFER")
-    "bb" 'bury-buffer
+    "bb" 'consult-line
+    "bh" 'bury-buffer
     "bu" 'unbury-buffer
     "bs" 'bookmark-set
     "bj" 'bookmark-jump
@@ -638,6 +674,7 @@
     "pk" 'project-kill-buffers
     ;; quick
     "q" '(:ignore t :which-key "🧙QUICKS")
+    "qq" 'scratch-buffer
     "qt" 'my/org-insert-time-range
     ;; respect original C-x 8 RET
     "q RET" 'insert-char
